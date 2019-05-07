@@ -4,8 +4,8 @@ import (
 	"log"
 )
 
-type Finalizer struct{
-	error []func() error
+type Finalizer struct {
+	error  []func() error
 	always []func() error
 }
 
@@ -20,7 +20,7 @@ func (c *Finalizer) Finalize(err *error) {
 	callStack(&c.always)
 }
 
-func callStack(stack *[]func()error) {
+func callStack(stack *[]func() error) {
 	for l := len(*stack); l > 0; l-- {
 		var f = (*stack)[l-1]
 		*stack = (*stack)[:l-1]
