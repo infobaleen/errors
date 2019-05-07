@@ -93,11 +93,11 @@ func WithAnother(err error, another ...error) error {
 		}
 		if err == nil {
 			err = a
+		} else if list, ok := err.(errorList); ok {
+			err = append(list, a)
+		} else {
+			err = errorList{err, a}
 		}
-		if list, ok := err.(errorList); ok {
-			return append(list, a)
-		}
-		return errorList{err, a}
 	}
 	return err
 }
@@ -112,15 +112,13 @@ type errorWithAftermath struct {
 }
 
 func WithAftermath(err error, followUp ...error) error {
-	for _, f := range followUp {
-		if f == nil {
-			continue
-		}
-		if withAftermath, ok := err.(errorWithAftermath); ok {
-			withAftermath.aftermath = WithAnother(withAftermath.aftermath, f)
-			err = withAftermath
-		}
-		err = errorWithAftermath{err, f}
+	if err == nil {
+		err = WithAnother(nil, followUp...)
+	} else if withAftermath, ok := err.(errorWithAftermath); ok {
+		withAftermath.aftermath = WithAnother(withAftermath.aftermath, followUp...)
+		err = withAftermath
+	} else {
+		err = errorWithAftermath{err, WithAnother(nil, followUp...)}
 	}
 	return err
 }
