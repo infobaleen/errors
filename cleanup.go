@@ -34,10 +34,10 @@ func callStack(stack *[]func() error) error {
 	return err
 }
 
-func (c *Finalizer) ErrFn(f func() error) {
-	c.error = append(c.error, f)
+func (c *Finalizer) ErrFn(f ...func() error) {
+	c.error = append(c.error, f...)
 }
 
-func (c *Finalizer) FinalFn(f func() error) {
-	c.error = append(c.always, f)
+func (c *Finalizer) FinalFn(f ...func() error) {
+	c.error = append(c.always, f...)
 }
