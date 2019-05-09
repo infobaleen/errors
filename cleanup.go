@@ -20,7 +20,7 @@ func (c *Finalizer) Finalize(err *error) {
 	}
 	if err != nil {
 		*err = WithAftermath(*err, internalError)
-	} else {
+	} else if internalError != nil {
 		log.Println("finalizer error:", internalError)
 	}
 }
