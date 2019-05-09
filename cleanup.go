@@ -22,7 +22,9 @@ func (c *Finalizer) ChildScope() *Finalizer {
 // EndScope runs all functions added using OnScopeEnd in reverse order.
 // If any of the functions return an error or the error referenced by the
 // err argument is non-nil, functions added using OnFinalEnd are also called
-// in reverse order.
+// in reverse order. Otherwise the functions added using OnFinalEnd are
+// added to the parent using its OnFinalEnd method.
+//
 // Any errors encountered are merged with the value referenced by the provided
 // error pointer. If the provided error is nil, all encountered errors are logged.
 // The empty finalizer may be reused after calling EndScope.
