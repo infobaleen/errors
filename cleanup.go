@@ -25,7 +25,7 @@ func (c *Finalizer) EndScope(err *error) {
 		c.parent.onFinal = append(c.parent.onFinal, c.onFinal...)
 	} else {
 		for c.onFinal != nil {
-			tmpErr = WithAnother(tmpErr, c.onScope.pop())
+			tmpErr = WithAnother(tmpErr, c.onFinal.pop())
 		}
 	}
 	if err != nil {
