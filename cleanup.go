@@ -35,7 +35,7 @@ import "log"
 //  	}
 //  	// ensures that Close is called at the end of this function
 //  	// if an error occurs, otherwise the responsibility is passed
-//  	// the parent finalizer.
+//  	// on to the parent finalizer.
 //  	finalizer.OnFinalEnd(f1.Close)
 //
 //  	f2, err = os.Open("input2.txt")
