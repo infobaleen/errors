@@ -3,6 +3,52 @@ package errors
 import "log"
 
 // Finalizer collects stacks of functions, which are executed at the end of user defined scopes.
+// Typically finalizers are used for convenient resource ownership management:
+//  func doSomething() (err error) {
+//  	var finalizer = NewFinalizer()
+//  	defer EndScope(&err)
+//  	var input *Input
+//  	input, err = loadInput(finalizer)
+//  	if err != nil {
+//  		return
+//  	}
+//  	var fOutput *os.File
+//  	fOutput, err = os.Create("output.txt")
+//  	if err != nil {
+//  		return
+//  	}
+//  	// replaces defer fOutput.Close(), as well as final fOutput.Sync()
+//  	finalizer.OnScopeEnd(fOutput.Close)
+//
+//  	... // use input and fOutput
+//
+//  	return
+//  }
+//  func loadInput(finalizer *Finalizer) (input *Input, err error) {
+//  	var finalizer = finalizer.ChildScope()
+//  	defer EndScope(&err)
+//
+//  	var f1, f2 *os.File
+//  	f1, err = os.Open("input1.txt")
+//  	if err != nil {
+//  		return
+//  	}
+//  	// ensures that Close is called at the end of this function
+//  	// if an error occurs, otherwise the responsibility is passed
+//  	// the parent finalizer.
+//  	finalizer.OnFinalEnd(f1.Close)
+//
+//  	f2, err = os.Open("input2.txt")
+//  	if err != nil {
+//  		// no need for f1.Close() here
+//  		return
+//  	}
+//  	finalizer.OnFinalEnd(f2.Close)
+//
+//  	...
+//
+//  	return *Input{f1, f2, ...}
+//  }
 type Finalizer struct {
 	parent  *Finalizer
 	onScope callStack
