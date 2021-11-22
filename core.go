@@ -103,7 +103,13 @@ func WithAnother(err error, another ...error) error {
 }
 
 func (err errorList) Error() string {
-	return fmt.Sprint(err)
+	var errs []string
+	for _, err := range err {
+		if s := err.Error(); s != "" {
+			errs = append(errs, s)
+		}
+	}
+	return strings.Join(errs, ", ")
 }
 
 type errorWithAftermath struct {
